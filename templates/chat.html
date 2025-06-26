@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" type="text/css" href="/static/style.css" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  </head>
+  <body>
+    <div class="chatbot-bg">
+      <div class="chatbot-window">
+        <div class="chatbot-header">
+          <div class="chatbot-header-icon">
+            <span class="medical-cross">+</span>
+            <span class="status-dot"></span>
+          </div>
+          <span class="chatbot-title">MediBot</span>
+          <span class="chatbot-close">&times;</span>
+        </div>
+        <div id="chatbox" class="chatbot-messages">
+          <div class="botText">
+            <span class="bubble-icon">🩺</span>
+            <span>Hi!! I am your Medical assistant MediBot🤖<br>How can I help you?</span>
+          </div>
+        </div>
+        <div id="userInput" class="chatbot-input-row">
+          <input id="textInput" type="text" name="msg" placeholder="Message" autocomplete="off" />
+          <button id="buttonInput" class="chatbot-send-btn">Send</button>
+        </div>
+      </div>
+    </div>
+    <script>
+      function getBotResponse() {
+        var rawText = $("#textInput").val();
+        if (!rawText.trim()) return;
+        var userHtml = '<div class="userText"><span class="bubble-icon">👤</span><span>' + rawText + "</span></div>";
+        $("#textInput").val("");
+        $("#chatbox").append(userHtml);
+        $("#chatbox").scrollTop($("#chatbox")[0].scrollHeight);
+        $.get("/get", { msg: rawText }).done(function (data) {
+          var botHtml = '<div class="botText"><span class="bubble-icon">🩺</span><span>' + data + "</span></div>";
+          $("#chatbox").append(botHtml);
+          $("#chatbox").scrollTop($("#chatbox")[0].scrollHeight);
+        });
+      }
+      $("#textInput").keypress(function (e) {
+        if (e.which == 13) {
+          getBotResponse();
+        }
+      });
+      $("#buttonInput").click(function () {
+        getBotResponse();
+      });
+      // Optional: Close button functionality
+      $(".chatbot-close").click(function () {
+        $(".chatbot-window").hide();
+      });
+    </script>
+  </body>
+</html>
